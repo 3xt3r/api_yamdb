@@ -2,6 +2,8 @@ from rest_framework import permissions
 from reviews.models import Comment, Review
 
 class IsAdmin(permissions.BasePermission):
+"""Разрешение доступа только пользователям с правами администратора."""
+
     def has_permission(self, request, view):
         return (
             request.user.is_authenticated
@@ -11,6 +13,7 @@ class IsAdmin(permissions.BasePermission):
 
 
 class AdminOrReadOnly(permissions.BasePermission):
+"""Разрешение доступа только на чтение."""
 
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
@@ -19,6 +22,8 @@ class AdminOrReadOnly(permissions.BasePermission):
 
 
 class ReviewCommentPermissions(permissions.BasePermission):
+"""Доступ для действий с комментариями."""
+    
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
                 or request.user.is_authenticated)
