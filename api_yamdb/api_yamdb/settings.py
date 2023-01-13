@@ -1,10 +1,16 @@
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
+load_dotenv()
+env_path = Path('.') / '.env'
+load_dotenv(env_path)
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -95,9 +101,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR / 'static/'),)
+
+ADMIN_ROLE = 'admin'
+MODERATOR_ROLE = 'moderator'
+USER_ROLE = 'user'
