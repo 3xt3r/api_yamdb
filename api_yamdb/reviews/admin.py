@@ -4,6 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from reviews.models import Category, Genre, Title, User
 
 
+@admin.register(User)
 class UserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': ('bio',)}),
@@ -14,31 +15,36 @@ class UserAdmin(UserAdmin):
     list_display = ['email', 'username', 'role', 'is_active']
     empty_value_display = '-пусто-'
 
-
-admin.site.register(User, UserAdmin)
-
-
+@admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'slug')
-    search_fields = ('name',)
-    empty_value_display = '-пусто-'
+    empty_value_display = 'значение отсутствует'
     list_filter = ('name',)
-    list_editable = ('name',)
+    search_fields = ('name',)
+    prepopulated_fields = {'slug': ('name',)}
 
 
+@admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'slug')
-    search_fields = ('name',)
-    empty_value_display = '-пусто-'
+    empty_value_display = 'значение отсутствует'
     list_filter = ('name',)
-    list_editable = ('name',)
+    search_fields = ('name',)
+    prepopulated_fields = {'slug': ('name',)}
 
-
+@admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'name',
+        'year',
+        'description',
+        'category',
+        'get_genre',
+        'count_reviews',
+        'get_rating'
+    )
     search_fields = ('name',)
     empty_value_display = '-пусто-'
 
 
-admin.site.register(Category, CategoryAdmin)
-admin.site.register(Genre, GenreAdmin)
-admin.site.register(Title, TitleAdmin)
