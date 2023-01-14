@@ -31,6 +31,7 @@ USERNAME_NOT_FOUND = {
 
 
 class GetAllUserViewSet(viewsets.ModelViewSet):
+    """Вьюсет для обьектов модели User."""
 
     permission_classes = [IsAdmin]
     queryset = User.objects.all()
@@ -72,6 +73,8 @@ class GetAllUserViewSet(viewsets.ModelViewSet):
 
 
 class RegistrationView(views.APIView):
+    """Вьюсет для создания обьектов класса User."""
+
     permission_classes = [AllowAny]
 
     @staticmethod
@@ -108,6 +111,8 @@ class RegistrationView(views.APIView):
 
 
 class GetTokenView(views.APIView):
+    """Вьюсет для получения пользователем токена."""
+
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -125,6 +130,7 @@ class GetTokenView(views.APIView):
 
 
 class CategoryViewSet(CustomViewSet):
+    """Вьюсет для для создания обьектов класса Category."""
 
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -136,6 +142,7 @@ class CategoryViewSet(CustomViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
+    """Вьюсет для для создания обьектов класса Review."""
 
     serializer_class = ReviewSerializer
     permission_classes = (
@@ -159,6 +166,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class GenreViewSet(CustomViewSet):
+    """Вьюсет для для создания обьектов класса Genre."""
 
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
@@ -170,6 +178,7 @@ class GenreViewSet(CustomViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
+    """Вьюсет для для создания обьектов класса Title."""
 
     queryset = Title.objects.annotate(
         rating=Avg('reviews__score')).all()
@@ -185,6 +194,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
+    """Вьюсет для для создания обьектов класса Comment."""
 
     serializer_class = CommentSerializer
     permission_classes = [ReviewCommentPermissions, ]

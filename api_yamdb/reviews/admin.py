@@ -15,6 +15,7 @@ class UserAdmin(UserAdmin):
     list_display = ['email', 'username', 'role', 'is_active']
     empty_value_display = '-пусто-'
 
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'slug')
@@ -32,19 +33,18 @@ class GenreAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
 
+
 @admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
         'name',
         'year',
+        'get_genre',
         'description',
         'category',
-        'get_genre',
         'count_reviews',
         'get_rating'
     )
     search_fields = ('name',)
     empty_value_display = '-пусто-'
-
-

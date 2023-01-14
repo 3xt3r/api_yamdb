@@ -5,6 +5,7 @@ VALIDATE_ERROR = {
     'error': 'Год больше нынешнего.'
 }
 
+
 def year_validator(value):
     if value > timezone.now().year:
         raise ValidationError(

@@ -21,25 +21,8 @@ def username_not_me(value):
         raise serializers.ValidationError(ME_ERROR)
 
 
-class UserSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели User."""
-
-    class Meta:
-        model = User
-        fields = (
-            'username', 'email', 'first_name', 'last_name', 'bio', 'role'
-        )
-        username = serializers.CharField(
-            max_length=100,
-            required=True,
-            validators=[
-                username_not_me,
-            ]
-        )
-
-
 class GetAllUserSerializer(serializers.ModelSerializer):
-    """Сериализатор для создания объекта класса User."""
+    """Сериализатор модели User."""
 
     class Meta:
         model = User
@@ -76,7 +59,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class GetTokenSerializer(serializers.ModelSerializer):
-    """Сериализатор для объекта класса User при получении токена JWT."""
+    """Сериализатор для объекта класса User при получении токена."""
 
     username = serializers.CharField(required=True)
     confirmation_code = serializers.CharField(required=True)
