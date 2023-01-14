@@ -1,8 +1,14 @@
 from rest_framework import permissions
 from reviews.models import Comment, Review
+from rest_framework.permissions import SAFE_METHODS
+
 
 class IsAdmin(permissions.BasePermission):
-"""Разрешение доступа только пользователям с правами администратора."""
+    """
+    Предоставляет права суперпользователю,
+    администратору и
+    аутентифицированному пользователю с ролью admin.
+    """
 
     def has_permission(self, request, view):
         return (
@@ -12,28 +18,30 @@ class IsAdmin(permissions.BasePermission):
         )
 
 
-class AdminOrReadOnly(permissions.BasePermission):
-"""Разрешение доступа только на чтение."""
+class AnonimReadOnly(permissions.BasePermission):
+    """Предоставляет права анонимному пользователю только на безопасные запросы."""
 
     def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return request.user.is_authenticated and request.user.is_admin
+        return request.method in permissions.SAFE_METHODS
 
 
 class ReviewCommentPermissions(permissions.BasePermission):
-"""Доступ для действий с комментариями."""
-    
+    """Предоставляет права на написание комментариев и отзывов.
+       Разрешает анонимному пользователю только безопасные запросы.
+       Доступ к запросам PATCH и DELETE предоставляется только суперпользователю,
+       админу, аутентифицированным пользователям с ролью admin или moderator,
+       а также автору объекта."""
+
     def has_permission(self, request, view):
-        return (request.method in permissions.SAFE_METHODS
+        return (request.method in SAFE_METHODS
                 or request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
         if request.user.is_authenticated and request.user.is_admin:
             return True
-        if ((type(obj) == Comment or type(obj) == Review)
+        if ((isinstance(obj, Comment) or isinstance(obj, Review))
             and request.user.is_authenticated
                 and request.user.is_moderator):
             return True
         return (obj.author == request.user
-                or request.method in permissions.SAFE_METHODS)
+                or request.method in SAFE_METHODS)
