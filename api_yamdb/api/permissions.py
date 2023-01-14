@@ -29,9 +29,7 @@ class AnonimReadOnly(permissions.BasePermission):
 class ReviewCommentPermissions(permissions.BasePermission):
     """Предоставляет права на написание комментариев и отзывов.
        Разрешает анонимному пользователю только безопасные запросы.
-       Доступ к запросам PATCH и DELETE предоставляется только 
-       суперпользователю, админу, аутентифицированным пользователям 
-       с ролью admin или moderator, а также автору объекта."""
+    """
 
     def has_permission(self, request, view):
         return (request.method in SAFE_METHODS
