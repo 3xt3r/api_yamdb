@@ -19,7 +19,7 @@ class IsAdmin(permissions.BasePermission):
 
 
 class AnonimReadOnly(permissions.BasePermission):
-    """Предоставляет права анонимному пользователю 
+    """Предоставляет права анонимному пользователю
        только на безопасные запросы."""
 
     def has_permission(self, request, view):
