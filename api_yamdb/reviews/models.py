@@ -2,8 +2,10 @@ import uuid
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.core.validators import (MaxValueValidator, MinValueValidator,
-RegexValidator)
+from django.core.validators import (
+    MaxValueValidator, MinValueValidator,
+    RegexValidator,
+)
 from .validators import year_validator
 
 
@@ -60,7 +62,8 @@ class User(AbstractUser):
     @property
     def is_admin(self):
         return self.role == (settings.ADMIN_ROLE or self.is_staff
-    or self.is_superuser)
+        or self.is_superuser
+        )
 
     @property
     def is_moderator(self):
