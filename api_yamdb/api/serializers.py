@@ -3,6 +3,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from reviews.models import Category, Comment, Genre, Review, Title, User
 from django.shortcuts import get_object_or_404
+from .validators import username_not_me
 
 username_validator = UnicodeUsernameValidator()
 
@@ -13,12 +14,6 @@ ME_ERROR = {
 DOUBLE_REVIEW_ERROR = {
     'error': 'Невозможно оставить два отзыва'
 }
-
-
-def username_not_me(value):
-    me = 'me'
-    if value == me:
-        raise serializers.ValidationError(ME_ERROR)
 
 
 class GetAllUserSerializer(serializers.ModelSerializer):
