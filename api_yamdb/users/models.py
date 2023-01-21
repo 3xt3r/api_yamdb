@@ -30,13 +30,7 @@ class User(AbstractUser):
         default=UserRoles.user.name,
         blank=False,
     )
-    confirmation_code = models.TextField(
-        verbose_name='Код подтверждения',
-        max_length=100,
-        default=str(uuid.uuid4()),
-        null=True,
-        editable=False,
-    )
+
 
     class Meta:
         ordering = ['date_joined']

@@ -111,11 +111,11 @@ class Review(models.Model):
         validators=[
             MinValueValidator(
                 1,
-                message='Введенная оценка ниже допустимой'
+                message='Введенная оценка ниже допустимой. Оценка не может быть меньше 1.'
             ),
             MaxValueValidator(
                 10,
-                message='Введенная оценка выше допустимой'
+                message='Введенная оценка выше допустимой. Оценка не может быть больше 10.'
             ),
         ]
     )
@@ -171,3 +171,24 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text[:15]
+
+
+class GenreTitle(models.Model):
+    """Класс, связывающий жанры и произведения."""
+
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.CASCADE,
+        verbose_name='Жанр'
+    )
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        verbose_name='Произведение'
+    )
+
+    class Meta:
+        verbose_name = 'Соответствие жанра и произведения'
+        verbose_name_plural = 'Таблица соответствия жанров и произведений'
+        ordering = ('id',)
+

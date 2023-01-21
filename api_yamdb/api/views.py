@@ -1,4 +1,4 @@
-from django.conf import settings
+from .utils import send_reg_mail
 from users.roles import UserRoles
 from django.core.mail import send_mail
 from django.db.models.aggregates import Avg
@@ -11,7 +11,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.contrib.auth.tokens import default_token_generator
+from rest_framework_simplejwt.tokens import AccessToken
 
 from reviews.models import Category, Genre, Review, Title
 from reviews.models import User
@@ -80,22 +81,16 @@ class RegistrationView(views.APIView):
 
     permission_classes = [AllowAny]
 
-    @staticmethod
-    def send_reg_mail(email, user):
-        send_mail(
-            subject='Код подтверждения для получения токена.',
-            message=f'Ваш код: {user.confirmation_code}',
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email],
-        )
-
     def post(self, request):
         username = request.data.get('username')
         email = request.data.get('email')
 
         try:
             user = User.objects.get(username=username, email=email)
-            self.send_reg_mail(email, user)
+            confirmation_code = default_token_generator.make_token(user)
+            send_reg_mail(user.email,
+            confirmation_code
+        )
             return Response("Код на почте", status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
@@ -108,8 +103,10 @@ class RegistrationView(views.APIView):
         user = get_object_or_404(
             User,
             username=serializer.validated_data.get('username'))
-
-        self.send_reg_mail(email, user)
+        confirmation_code = default_token_generator.make_token(user)
+        send_reg_mail(user.email,
+            confirmation_code
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -124,12 +121,11 @@ class GetTokenView(views.APIView):
         confirmation_code = serializer.validated_data.get('confirmation_code')
         username = serializer.validated_data.get('username')
         user = get_object_or_404(User, username=username)
-        if user.confirmation_code != confirmation_code:
-            return Response(
-                CODE_ERROR,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        return Response(self.token(user), status=status.HTTP_200_OK)
+        if not default_token_generator.check_token(user, confirmation_code):
+            return Response(CODE_ERROR, status=status.HTTP_400_BAD_REQUEST)
+
+        message = {'token': str(AccessToken.for_user(user))}
+        return Response(message, status=status.HTTP_200_OK)
 
 
 class CategoryViewSet(CustomViewSet):
