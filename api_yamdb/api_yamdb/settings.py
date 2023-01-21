@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 ALLOWED_HOSTS = ['*']
 
-AUTH_USER_MODEL = 'reviews.User'
+AUTH_USER_MODEL = 'users.User'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -25,9 +25,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
+    'users.apps.UsersConfig',
     'api.apps.ApiConfig',
     'reviews.apps.ReviewsConfig',
-
 ]
 
 MIDDLEWARE = [
@@ -96,9 +96,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
-ADMIN_ROLE = 'admin'
-MODERATOR_ROLE = 'moderator'
-USER_ROLE = 'user'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(hours=24),
@@ -126,3 +123,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+CSV_FILES_DIR = os.path.join(BASE_DIR, 'static/data')

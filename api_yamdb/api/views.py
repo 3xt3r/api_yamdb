@@ -1,4 +1,5 @@
 from django.conf import settings
+from users.roles import UserRoles
 from django.core.mail import send_mail
 from django.db.models.aggregates import Avg
 from django.shortcuts import get_object_or_404
@@ -11,7 +12,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 
-from reviews.models import Category, Genre, Review, Title, User
+
+from reviews.models import Category, Genre, Review, Title
+from reviews.models import User
 from .filters import TitleFilter
 from .mixins import CustomViewSet
 from .permissions import IsAdmin, ReviewCommentPermissions, AnonimReadOnly
@@ -41,7 +44,7 @@ class GetAllUserViewSet(viewsets.ModelViewSet):
     search_fields = ('username',)
 
     @action(
-        detail=False, methods=['GET', 'PATCH'],
+        detail=False, methods=['GET', 'PATCH', 'PUT'],
         permission_classes=[IsAuthenticated],
         serializer_class=GetAllUserSerializer,
         url_path='me',
@@ -50,10 +53,10 @@ class GetAllUserViewSet(viewsets.ModelViewSet):
     def me(self, request):
         user = self.request.user
         if request.method == 'PATCH':
-            if ((request.data.get('role') == settings.ADMIN_ROLE)
-                    and (self.request.user.role == settings.USER_ROLE)):
+            if ((request.data.get('role') == UserRoles.admin.name)
+                    and (self.request.user.role == UserRoles.user.name)):
                 data = dict(request.data)
-                data['role'] = settings.USER_ROLE
+                data['role'] = UserRoles.user.name
             else:
                 data = request.data
             serializer = self.get_serializer(
