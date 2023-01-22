@@ -4,6 +4,7 @@ ME_ERROR = {
     'error': 'Использовать имя me запрещено.'
 }
 
+
 def username_not_me(value):
 
     me = {'ME', 'me', 'Me', 'mE'}

@@ -45,7 +45,7 @@ class GetAllUserViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'head', 'patch', 'delete']
 
     @action(
-        detail=False, methods=['GET', 'PATCH',],
+        detail=False, methods=['GET', 'PATCH'],
         permission_classes=[IsAuthenticated],
         serializer_class=GetAllUserSerializer,
         url_path='me',
