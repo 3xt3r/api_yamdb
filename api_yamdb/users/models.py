@@ -31,7 +31,6 @@ class User(AbstractUser):
         blank=False,
     )
 
-
     class Meta:
         ordering = ['date_joined']
         verbose_name = 'Пользователь'
@@ -47,5 +46,3 @@ class User(AbstractUser):
     @property
     def is_moderator(self):
         return self.role == UserRoles.moderator.name
-
-

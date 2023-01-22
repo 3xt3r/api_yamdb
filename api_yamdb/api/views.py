@@ -1,6 +1,5 @@
 from .utils import send_reg_mail
 from users.roles import UserRoles
-from django.core.mail import send_mail
 from django.db.models.aggregates import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -43,9 +42,10 @@ class GetAllUserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     filter_backends = (filters.SearchFilter, )
     search_fields = ('username',)
+    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
 
     @action(
-        detail=False, methods=['GET', 'PATCH', 'PUT'],
+        detail=False, methods=['GET', 'PATCH',],
         permission_classes=[IsAuthenticated],
         serializer_class=GetAllUserSerializer,
         url_path='me',
@@ -54,12 +54,12 @@ class GetAllUserViewSet(viewsets.ModelViewSet):
     def me(self, request):
         user = self.request.user
         if request.method == 'PATCH':
-            if ((request.data.get('role') == UserRoles.admin.name)
-                    and (self.request.user.role == UserRoles.user.name)):
+            if not request.data.get('role') == UserRoles.admin.name:
+                data = request.data
+            else:
                 data = dict(request.data)
                 data['role'] = UserRoles.user.name
-            else:
-                data = request.data
+
             serializer = self.get_serializer(
                 user, data=data, partial=True
             )
@@ -69,11 +69,6 @@ class GetAllUserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         serializer = self.get_serializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def update(self, request, *args, **kwargs):
-        if request.method == 'PUT':
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        return super().update(request, *args, **kwargs)
 
 
 class RegistrationView(views.APIView):
@@ -89,8 +84,8 @@ class RegistrationView(views.APIView):
             user = User.objects.get(username=username, email=email)
             confirmation_code = default_token_generator.make_token(user)
             send_reg_mail(user.email,
-            confirmation_code
-        )
+                          confirmation_code
+                          )
             return Response("Код на почте", status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
@@ -105,8 +100,8 @@ class RegistrationView(views.APIView):
             username=serializer.validated_data.get('username'))
         confirmation_code = default_token_generator.make_token(user)
         send_reg_mail(user.email,
-            confirmation_code
-        )
+                      confirmation_code
+                      )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

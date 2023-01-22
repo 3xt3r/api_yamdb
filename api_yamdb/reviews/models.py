@@ -189,6 +189,4 @@ class GenreTitle(models.Model):
 
     class Meta:
         verbose_name = 'Соответствие жанра и произведения'
-        verbose_name_plural = 'Таблица соответствия жанров и произведений'
         ordering = ('id',)
-
